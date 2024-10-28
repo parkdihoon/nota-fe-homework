@@ -19,7 +19,7 @@ export const ChatList = () => {
           chat_model_name: 'modelName',
           dialogue_id: 'id',
         };
-        const renameData = renameFields<IChat[]>(response.data, fieldMappings);
+        const renameData = renameFields<IChat[]>(response, fieldMappings);
         setChats(renameData);
       } catch (e: unknown) {
         console.error(e);

@@ -34,7 +34,7 @@ export const ChatList = () => {
       <div className="h-full w-1/3 border-2 rounded overflow-y-auto">
         {
           chats.map((chat) => (
-            <Chat key={chat.id} id={chat.id} modelName={chat.modelName} dialogues={chat.dialogues} />
+            <Chat key={chat.id} chat={chat}/>
           ))
         }
       </div>

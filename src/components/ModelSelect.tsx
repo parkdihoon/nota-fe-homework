@@ -6,6 +6,7 @@ import { first, isEmpty } from 'lodash-es';
 
 export const ModelSelect = () => {
   const selectedChat = useChatStore(state => state.selectedChat);
+  const { setSelectedChat } = useChatStore(state => state.actions);
   const { chatModels, selectedChatModel } = useActivatedChatStore(state => state);
   const { setChatModels, setSelectedChatModel } = useActivatedChatStore(state => state.actions);
 
@@ -17,7 +18,7 @@ export const ModelSelect = () => {
         if (isEmpty(selectedChat)) {
           setSelectedChatModel(first(response));
         } else {
-          const selectModel = response.find((model) => model.id === selectedChat.modelId)
+          const selectModel = response.find((model) => model.id === selectedChat.modelId);
           setSelectedChatModel(selectModel);
         }
       } catch (e: unknown) {
@@ -31,6 +32,7 @@ export const ModelSelect = () => {
   const onHandleChange = (e: ChangeEvent<HTMLSelectElement>) => {
     const selectedModel = chatModels.find((model) => model.id === e.target.value);
     setSelectedChatModel(selectedModel);
+    setSelectedChat(null);
   };
 
   return (

@@ -10,13 +10,15 @@ export const useChatStore = create(
     actions: {
       setChats: (chats: IChat[]) => void;
       setSelectedChat: (chat: IChat | null) => void;
+      isNoneSelected: () => boolean;
     }
-  }>((set) => ({
+  }>((set, get) => ({
     chats: [] as IChat[],
     selectedChat: null,
     actions: {
       setChats: (chats: IChat[]) => set({ chats }),
       setSelectedChat: (chat: IChat | null) => set({ selectedChat: chat }),
+      isNoneSelected: () => get().selectedChat === null,
     },
   })),
 );

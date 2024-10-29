@@ -16,10 +16,10 @@ export const ModelSelect = () => {
         const response = await fetchChatModels();
         setChatModels(response);
         if (isEmpty(selectedChat)) {
-          setSelectedChatModel(first(response));
+          setSelectedChatModel(first(response) ?? null);
         } else {
           const selectModel = response.find((model) => model.id === selectedChat.modelId);
-          setSelectedChatModel(selectModel);
+          setSelectedChatModel(selectModel ?? null);
         }
       } catch (e: unknown) {
         console.error(e);
@@ -31,12 +31,12 @@ export const ModelSelect = () => {
 
   const onHandleChange = (e: ChangeEvent<HTMLSelectElement>) => {
     const selectedModel = chatModels.find((model) => model.id === e.target.value);
-    setSelectedChatModel(selectedModel);
+    setSelectedChatModel(selectedModel ?? null);
     setSelectedChat(null);
   };
 
   return (
-    <>
+    <div className="p-3">
       <select className="w-1/4" name="modelName" value={selectedChatModel?.id} onChange={onHandleChange}>
         <option value="">--Please select an option --</option>
         {
@@ -45,6 +45,6 @@ export const ModelSelect = () => {
           ))
         }
       </select>
-    </>
+    </div>
   );
 };

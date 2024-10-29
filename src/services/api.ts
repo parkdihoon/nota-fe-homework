@@ -28,7 +28,7 @@ export const fetchChatList = async (): Promise<IChat[]> => {
   return renameFields<IChat[]>(data, fieldMappings);
 };
 
-export const fetchChatDetail = async (chatId: number): Promise<IChat> => {
+export const fetchChatDetail = async (chatId: string): Promise<IChat> => {
   const data = await fetchInterceptor(`/chats/${chatId}`);
   const fieldMappings = {
     chat_id: 'id',
@@ -48,7 +48,7 @@ export const fetchChatModels = async (): Promise<ChatModel[]> => {
   return renameFields<ChatModel[]>(data, fieldMappings);
 };
 
-export const addDialogueInChat = async (chatId: number, prompt: string): Promise<IChat> => {
+export const addDialogueInChat = async (chatId: string, prompt: string): Promise<IChat> => {
   const data = await fetchInterceptor(`/chats/${chatId}/dialogues`, {
     method: 'POST',
     body: JSON.stringify({ prompt }),
@@ -62,7 +62,7 @@ export const addDialogueInChat = async (chatId: number, prompt: string): Promise
   return renameFields<IChat>(data, fieldMappings);
 }
 
-export const addChat = async (modelId: number): Promise<IChat> => {
+export const addChat = async (modelId: string): Promise<IChat> => {
   const data = await fetchInterceptor('/chats', {
     method: 'POST',
     body: JSON.stringify({ chat_model_id: modelId }),

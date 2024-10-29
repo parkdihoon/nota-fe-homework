@@ -28,15 +28,9 @@ export const ActivatedChat = () => {
   return (
     <>
       <div className="h-full w-2/3 border-2 rounded flex flex-col p-4">
-        <div className="p-3">
-          <ModelSelect />
-        </div>
-        <div className="flex flex-col gap-y-1 flex-1 p-3">
-          <Dialogue />
-        </div>
-        <div className="p-3">
-          <PromptInput />
-        </div>
+        <ModelSelect />
+        <Dialogue />
+        <PromptInput />
       </div>
     </>
   );

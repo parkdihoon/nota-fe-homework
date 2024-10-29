@@ -7,7 +7,7 @@ import { isNil } from 'lodash-es';
 export const PromptInput = () => {
   const [prompt, setPrompt] = useState<string>('');
   const selectedChat = useChatStore(state => state.selectedChat);
-  const { isNonSelected} = useChatStore(state => state.actions);
+  const { isNoneSelected } = useChatStore(state => state.actions);
   const { chatDetail } = useActivatedChatStore(state => state);
   const { setChatDetail } = useActivatedChatStore(state => state.actions);
 
@@ -41,9 +41,9 @@ export const PromptInput = () => {
   return (
     <>
       <form className="flex flex-row gap-x-1" onSubmit={onHandleSubmit}>
-            <textarea className="w-full resize-none" rows={3} disabled={isNonSelected()} value={prompt}
+            <textarea className="w-full resize-none" rows={3} disabled={isNoneSelected()} value={prompt}
                       onChange={onHandlePromptChange} />
-        <button disabled={isNonSelected()} type="submit">Submit</button>
+        <button disabled={isNoneSelected()} type="submit">Submit</button>
       </form>
     </>
   );

@@ -1,42 +1,46 @@
 import { Chat } from './Chat.tsx';
 import { useChatStore } from '../stores/chat.ts';
 import { useEffect } from 'react';
-import { renameFields } from '../utils/renameFields.ts';
-import { IChat } from '../models/chat.interface.ts';
-import { fetchChatList } from '../services/api.ts';
+import { addChat, fetchChatList } from '../services/api.ts';
+import { useActivatedChatStore } from '../stores/activatedChat.ts';
+import { last } from 'lodash-es';
 
 export const ChatList = () => {
   const chats = useChatStore(state => state.chats);
-  const { setChats } = useChatStore(state => state.actions);
+  const { setChats, setSelectedChat } = useChatStore(state => state.actions);
+  const { selectedChatModel, chatDetail } = useActivatedChatStore(state => state);
 
   useEffect(() => {
-    const getChatList = async () => {
-      try {
-        const response = await fetchChatList();
-        const fieldMappings = {
-          chat_id: 'id',
-          chat_model_id: 'modelId',
-          chat_model_name: 'modelName',
-          dialogue_id: 'id',
-        };
-        const renameData = renameFields<IChat[]>(response, fieldMappings);
-        setChats(renameData);
-      } catch (e: unknown) {
-        console.error(e);
-      }
-    };
-
     getChatList();
-  }, [setChats]);
+  }, [chatDetail]);
+
+  const getChatList = async () => {
+    try {
+      const response = await fetchChatList();
+      setChats(response);
+      return response;
+    } catch (e: unknown) {
+      console.error(e);
+    }
+  };
+
+  const onHandleClickNewButton = async () => {
+    await addChat(selectedChatModel!.id);
+    const list = await getChatList();
+    setSelectedChat(last(list));
+  };
 
   return (
     <>
-      <div className="h-full w-1/3 border-2 rounded overflow-y-auto">
-        {
-          chats.map((chat) => (
-            <Chat key={chat.id} chat={chat}/>
-          ))
-        }
+      <div className="flex flex-col gap-y-1 w-1/3 border-2 rounded">
+        <button className="h-1/10 w-1/4 m-2 self-end" onClick={onHandleClickNewButton}>New</button>
+        <div className="h-full overflow-y-auto">
+          {
+            chats.map((chat) => (
+              <Chat key={chat.id} chat={chat} />
+            ))
+          }
+        </div>
       </div>
     </>
   );

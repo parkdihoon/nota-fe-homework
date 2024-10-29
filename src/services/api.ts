@@ -61,3 +61,17 @@ export const addDialogueInChat = async (chatId: number, prompt: string): Promise
   };
   return renameFields<IChat>(data, fieldMappings);
 }
+
+export const addChat = async (modelId: number): Promise<IChat> => {
+  const data = await fetchInterceptor('/chats', {
+    method: 'POST',
+    body: JSON.stringify({ chat_model_id: modelId }),
+  });
+  const fieldMappings = {
+    chat_id: 'id',
+    chat_model_id: 'modelId',
+    chat_model_name: 'modelName',
+    dialogue_id: 'id',
+  };
+  return renameFields<IChat>(data, fieldMappings);
+}

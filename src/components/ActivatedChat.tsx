@@ -9,6 +9,7 @@ import { useActivatedChatStore } from '../stores/activatedChat.ts';
 export const ActivatedChat = () => {
   const selectedChat = useChatStore(state => state.selectedChat);
   const { setChatDetail } = useActivatedChatStore(state => state.actions);
+
   useEffect(() => {
     const getChatDetail = async () => {
       if (selectedChat) {

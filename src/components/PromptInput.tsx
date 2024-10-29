@@ -2,12 +2,12 @@ import { useChatStore } from '../stores/chat.ts';
 import { useActivatedChatStore } from '../stores/activatedChat.ts';
 import { ChangeEvent, FormEvent, useState } from 'react';
 import { addDialogueInChat, fetchChatDetail } from '../services/api.ts';
-import { isNil } from 'lodash-es';
+import { isEmpty, isNil } from 'lodash-es';
 
 export const PromptInput = () => {
   const [prompt, setPrompt] = useState<string>('');
   const selectedChat = useChatStore(state => state.selectedChat);
-  const chatDetail = useActivatedChatStore(state => state.chatDetail);
+  const { chatDetail } = useActivatedChatStore(state => state);
   const { setChatDetail } = useActivatedChatStore(state => state.actions);
 
   const onHandleSubmit = async (e: FormEvent) => {
@@ -40,9 +40,9 @@ export const PromptInput = () => {
   return (
     <>
       <form className="flex flex-row gap-x-1" onSubmit={onHandleSubmit}>
-            <textarea className="w-full resize-none" rows={3} disabled={!chatDetail} value={prompt}
+            <textarea className="w-full resize-none" rows={3} disabled={isEmpty(selectedChat)} value={prompt}
                       onChange={onHandlePromptChange} />
-        <button disabled={!chatDetail} type="submit">Submit</button>
+        <button disabled={isEmpty(selectedChat)} type="submit">Submit</button>
       </form>
     </>
   );

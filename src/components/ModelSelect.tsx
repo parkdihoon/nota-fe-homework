@@ -1,36 +1,45 @@
-import { useEffect, useState } from 'react';
+import { ChangeEvent, useEffect } from 'react';
 import { fetchChatModels } from '../services/api.ts';
-import { ChatModel } from '../models/chat.interface.ts';
 import { useChatStore } from '../stores/chat.ts';
 import { useActivatedChatStore } from '../stores/activatedChat.ts';
+import { first, isEmpty } from 'lodash-es';
 
 export const ModelSelect = () => {
-  const [chatModels, setChatModels] = useState<ChatModel[]>([]);
   const selectedChat = useChatStore(state => state.selectedChat);
-  const chatDetail = useActivatedChatStore(state => state.chatDetail);
+  const { chatModels, selectedChatModel } = useActivatedChatStore(state => state);
+  const { setChatModels, setSelectedChatModel } = useActivatedChatStore(state => state.actions);
 
   useEffect(() => {
     const getChatModel = async () => {
-      if (selectedChat) {
-        try {
-          const response = await fetchChatModels();
-          setChatModels(response);
-        } catch (e: unknown) {
-          console.error(e);
+      try {
+        const response = await fetchChatModels();
+        setChatModels(response);
+        if (isEmpty(selectedChat)) {
+          setSelectedChatModel(first(response));
+        } else {
+          const selectModel = response.find((model) => model.id === selectedChat.modelId)
+          setSelectedChatModel(selectModel);
         }
+      } catch (e: unknown) {
+        console.error(e);
       }
     };
 
     getChatModel();
   }, [selectedChat]);
 
+  const onHandleChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    const selectedModel = chatModels.find((model) => model.id === e.target.value);
+    setSelectedChatModel(selectedModel);
+  };
+
   return (
     <>
-      <select className="w-1/4" name="modelName" disabled={!chatDetail} value={chatDetail?.modelName}>
+      <select className="w-1/4" name="modelName" value={selectedChatModel?.id} onChange={onHandleChange}>
         <option value="">--Please select an option --</option>
         {
           chatModels.map((model) => (
-            <option key={model.id} value={model.name}>{model.name}</option>
+            <option key={model.id} value={model.id}>{model.name}</option>
           ))
         }
       </select>

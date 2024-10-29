@@ -1,12 +1,12 @@
 export interface IChat {
-  id: number;
-  modelId: number;
+  id: string;
+  modelId: string;
   modelName: string;
   dialogues: IDialogue[];
 }
 
 export interface IDialogue {
-  id: number;
+  id: string;
   prompt: string;
   completion: string;
 }
@@ -16,6 +16,6 @@ export interface ChatProps {
 }
 
 export interface ChatModel {
-  id: number;
+  id: string;
   name: string;
 }

@@ -47,3 +47,17 @@ export const fetchChatModels = async (): Promise<ChatModel[]> => {
   };
   return renameFields<ChatModel[]>(data, fieldMappings);
 };
+
+export const addDialogueInChat = async (chatId: number, prompt: string): Promise<IChat> => {
+  const data = await fetchInterceptor(`/chats/${chatId}/dialogues`, {
+    method: 'POST',
+    body: JSON.stringify({ prompt }),
+  });
+  const fieldMappings = {
+    chat_id: 'id',
+    chat_model_id: 'modelId',
+    chat_model_name: 'modelName',
+    dialogue_id: 'id',
+  };
+  return renameFields<IChat>(data, fieldMappings);
+}

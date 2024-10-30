@@ -60,13 +60,20 @@ export const Dialogue = () => {
         data?.dialogues?.map((dialogue) => (
           <div className="flex flex-col gap-y-1" key={dialogue.id}>
             <span className="self-end bg-neutral p-2 rounded-lg whitespace-pre-wrap">{dialogue.prompt}</span>
-            <span
-              className="self-start bg-neutral p-2 rounded-lg whitespace-pre-wrap">{dialogue.completion}</span>
+            {
+              dialogue?.completion ?
+                <span className="self-start bg-neutral p-2 rounded-lg whitespace-pre-wrap">{dialogue?.completion}</span> :
+                <div className="flex items-center space-x-1">
+                  <span className="h-2 w-2 rounded-full bg-gray-500 animate-bounceDot1"></span>
+                  <span className="h-2 w-2 rounded-full bg-gray-500 animate-bounceDot2"></span>
+                  <span className="h-2 w-2 rounded-full bg-gray-500 animate-bounceDot3"></span>
+                </div>
+            }
           </div>
         ))
       }
       <button
-        className={`sticky bottom-1 left-1/2 w-5 h-5 p-0 text-center leading-5 bg-secondary rounded-full ${isNotAtBottom ? 'inline-block' : 'hidden'}`}
+        className={`sticky bottom-1 left-1/2 w-5 h-5 p-0 text-center leading-5 bg-secondary rounded-full animate-bounce ${isNotAtBottom ? 'inline-block' : 'hidden'}`}
         onClick={onHandleClickLatest}>↓
       </button>
     </div>

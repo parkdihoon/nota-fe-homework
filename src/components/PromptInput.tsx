@@ -1,35 +1,30 @@
 import { useChatStore } from '../stores/chat.ts';
 import { useActivatedChatStore } from '../stores/activatedChat.ts';
 import { ChangeEvent, FormEvent, useState } from 'react';
-import { addDialogueInChat, fetchChatDetail } from '../services/api.ts';
+import { addDialogueInChat } from '../services/api.ts';
 import { isEmpty, isNil } from 'lodash-es';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 export const PromptInput = () => {
+  const queryClient = useQueryClient();
+
   const [prompt, setPrompt] = useState<string>('');
-  const selectedChat = useChatStore(state => state.selectedChat);
   const { isNoneSelected } = useChatStore(state => state.actions);
   const { chatDetail } = useActivatedChatStore(state => state);
-  const { setChatDetail } = useActivatedChatStore(state => state.actions);
+
+  const mutation = useMutation({
+    mutationFn: (data: { chatId: string, prompt: string }) => addDialogueInChat(data.chatId, data.prompt),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['chatDetail'] }),
+  });
 
   const onHandleSubmit = async (e: FormEvent) => {
-    if (isNil(selectedChat?.id) || isNil(prompt)) {
+    if (isNil(chatDetail?.id)) {
       return;
     }
 
     e.preventDefault();
 
-    const updatedChatDetail = {
-      ...chatDetail,
-      dialogues: [
-        ...(chatDetail?.dialogues || []),
-        { id: Date.now().toString(), prompt, completion: '' },
-      ],
-    };
-    setChatDetail(updatedChatDetail);
-
-    await addDialogueInChat(selectedChat.id, prompt);
-    const newChatDetail = await fetchChatDetail(selectedChat.id);
-    setChatDetail(newChatDetail);
+    mutation.mutate({ chatId: chatDetail.id, prompt });
 
     setPrompt('');
   };

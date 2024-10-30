@@ -60,7 +60,7 @@ export const addDialogueInChat = async (chatId: string, prompt: string): Promise
     dialogue_id: 'id',
   };
   return renameFields<IChat>(data, fieldMappings);
-}
+};
 
 export const addChat = async (modelId: string): Promise<IChat> => {
   const data = await fetchInterceptor('/chats', {
@@ -74,4 +74,4 @@ export const addChat = async (modelId: string): Promise<IChat> => {
     dialogue_id: 'id',
   };
   return renameFields<IChat>(data, fieldMappings);
-}
+};

@@ -14,7 +14,29 @@ export const PromptInput = () => {
 
   const mutation = useMutation({
     mutationFn: (data: { chatId: string, prompt: string }) => addDialogueInChat(data.chatId, data.prompt),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['chatDetail'] }),
+    onMutate: async (newData) => {
+
+      await queryClient.cancelQueries({ queryKey: ['chatDetail'] });
+      const previousData = queryClient.getQueryData(['chatDetail']);
+
+      queryClient.setQueryData(['chatDetail'], (oldData) => ({
+        ...oldData,
+        dialogues: [
+          ...(chatDetail?.dialogues || []),
+          { id: Date.now().toString(), prompt: newData.prompt, completion: '' },
+        ],
+      }));
+
+      return { previousData };
+    },
+    onError: (err, newData, context) => {
+      if (context?.previousData) {
+        queryClient.setQueryData(['chatDetail'], context.previousData);
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['chatDetail'] });
+    },
   });
 
   const onHandleSubmit = async (e: FormEvent) => {

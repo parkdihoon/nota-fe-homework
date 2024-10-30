@@ -7,12 +7,16 @@ import { last } from 'lodash-es';
 
 export const ChatList = () => {
   const chats = useChatStore(state => state.chats);
+  const { selectedChatModel, chatDetail, isChangedModel } = useActivatedChatStore(state => state);
   const { setChats, setSelectedChat } = useChatStore(state => state.actions);
-  const { selectedChatModel, chatDetail } = useActivatedChatStore(state => state);
 
   useEffect(() => {
     getChatList();
   }, [chatDetail]);
+
+  useEffect(() => {
+    setSelectedChat(null);
+  }, [isChangedModel]);
 
   const getChatList = async () => {
     try {

@@ -2,17 +2,22 @@ import { useActivatedChatStore } from '../stores/activatedChat.ts';
 import { useChatStore } from '../stores/chat.ts';
 import { useEffect, useRef, useState } from 'react';
 import { isNil } from 'lodash-es';
+import { useFetchChatDetailQuery } from '../hooks/useFetchChatDetailQuery.ts';
 
 export const Dialogue = () => {
   const [isNotAtBottom, setIsNotAtBottom] = useState(false);
   const containerRef = useRef(null as HTMLDivElement | null);
   const { isNoneSelected } = useChatStore(state => state.actions);
-  const chatDetail = useActivatedChatStore(state => state.chatDetail);
+  const { setChatDetail } = useActivatedChatStore(state => state.actions);
+  const { data, isSuccess, isLoading, isError, error } = useFetchChatDetailQuery();
 
   useEffect(() => {
+    if (isSuccess) {
+      setChatDetail(data);
+    }
     setIsNotAtBottom(false);
     scrollToBottom();
-  }, [chatDetail]);
+  }, [data]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -41,15 +46,18 @@ export const Dialogue = () => {
     }
   };
 
-  const onHandleLatest = () => {
+  const onHandleClickLatest = () => {
     scrollToBottom();
   };
+
+  if (isLoading) return <div className="flex flex-1 justify-center items-center">Loading...</div>;
+  if (isError) return <div className="flex flex-1 justify-center items-center">Error: {error.message}</div>;
 
   return (
     <div className="flex flex-col gap-y-1 flex-1 p-3 overflow-y-auto relative" ref={containerRef}>
       {
         !isNoneSelected() &&
-        chatDetail?.dialogues?.map((dialogue) => (
+        data?.dialogues?.map((dialogue) => (
           <div className="flex flex-col gap-y-1" key={dialogue.id}>
             <span className="self-end bg-neutral p-2 rounded-lg whitespace-pre-wrap">{dialogue.prompt}</span>
             <span
@@ -59,7 +67,7 @@ export const Dialogue = () => {
       }
       <button
         className={`sticky bottom-1 left-1/2 w-5 h-5 p-0 text-center leading-5 bg-secondary rounded-full ${isNotAtBottom ? 'inline-block' : 'hidden'}`}
-        onClick={onHandleLatest}>↓
+        onClick={onHandleClickLatest}>↓
       </button>
     </div>
   );

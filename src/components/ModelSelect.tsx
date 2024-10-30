@@ -7,9 +7,8 @@ import { useQuery } from '@tanstack/react-query';
 
 export const ModelSelect = () => {
   const selectedChat = useChatStore(state => state.selectedChat);
-  const { setSelectedChat } = useChatStore(state => state.actions);
-  const { selectedChatModel } = useActivatedChatStore(state => state);
-  const { setSelectedChatModel } = useActivatedChatStore(state => state.actions);
+  const { selectedChatModel, chatDetail, isChangedModel } = useActivatedChatStore(state => state);
+  const { setSelectedChatModel, setIsChangedModel } = useActivatedChatStore(state => state.actions);
   const { data, isSuccess, isLoading, isError, error } = useQuery({
     queryKey: ['chatModels'],
     queryFn: () => fetchChatModels(),
@@ -20,15 +19,14 @@ export const ModelSelect = () => {
     if (!isSuccess) {
       return;
     }
-
-    const selectModel = isEmpty(selectedChat) ? first(data) : data?.find((model) => model.id === selectedChat.modelId);
+    const selectModel = isEmpty(selectedChat) ? first(data) : data?.find((model) => model.id === chatDetail?.modelId);
     setSelectedChatModel(selectModel ?? null);
-  }, [selectedChat, isSuccess]);
+  }, [chatDetail, isSuccess]);
 
   const onHandleChange = (e: ChangeEvent<HTMLSelectElement>) => {
     const selectedModel = data?.find((model) => model.id === e.target.value);
+    setIsChangedModel(selectedChatModel?.id !== selectedModel?.id ? !isChangedModel : isChangedModel);
     setSelectedChatModel(selectedModel ?? null);
-    setSelectedChat(null);
   };
 
   if (isLoading) return <>Loading...</>;

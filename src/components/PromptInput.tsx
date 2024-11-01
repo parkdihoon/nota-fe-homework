@@ -2,8 +2,9 @@ import { useChatStore } from '../stores/chat.ts';
 import { useActivatedChatStore } from '../stores/activatedChat.ts';
 import { ChangeEvent, FormEvent, useState } from 'react';
 import { addDialogueInChat } from '../services/api.ts';
-import { isEmpty, isNil } from 'lodash-es';
+import { isEmpty, isNil, last } from 'lodash-es';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { IChat } from '../models/chat.interface.ts';
 
 export const PromptInput = () => {
   const queryClient = useQueryClient();
@@ -17,9 +18,9 @@ export const PromptInput = () => {
     onMutate: async (newData) => {
 
       await queryClient.cancelQueries({ queryKey: ['chatDetail'] });
-      const previousData = queryClient.getQueryData(['chatDetail']);
+      const previousChatDetail = queryClient.getQueryData(['chatDetail']);
 
-      queryClient.setQueryData(['chatDetail'], (oldData) => ({
+      queryClient.setQueryData(['chatDetail'], (oldData: IChat) => ({
         ...oldData,
         dialogues: [
           ...(chatDetail?.dialogues || []),
@@ -27,15 +28,29 @@ export const PromptInput = () => {
         ],
       }));
 
-      return { previousData };
+      const previousChatList = queryClient.getQueryData(['chatDetail']);
+      queryClient.setQueryData(['chatList'], (oldChatList: IChat[]) => {
+        const updatedChatList = [...oldChatList];
+        const lastChat = last(updatedChatList);
+        if (lastChat) {
+          lastChat.dialogues = [...lastChat.dialogues, { id: Date.now().toString(), prompt: newData.prompt, completion: '' }];
+        }
+        return updatedChatList;
+      });
+
+      return { previousChatDetail, previousChatList };
     },
-    onError: (err, newData, context) => {
-      if (context?.previousData) {
-        queryClient.setQueryData(['chatDetail'], context.previousData);
+    onError: (_err, _newData, context) => {
+      if (context?.previousChatDetail) {
+        queryClient.setQueryData(['chatDetail'], context.previousChatDetail);
+      }
+      if (context?.previousChatList) {
+        queryClient.setQueryData(['chatList'], context.previousChatList);
       }
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['chatDetail'] });
+      queryClient.invalidateQueries({ queryKey: ['chatList'] });
     },
   });
 

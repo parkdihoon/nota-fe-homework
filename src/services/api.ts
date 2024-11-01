@@ -28,7 +28,8 @@ export const fetchChatList = async (): Promise<IChat[]> => {
   return renameFields<IChat[]>(data, fieldMappings);
 };
 
-export const fetchChatDetail = async (chatId: string): Promise<IChat> => {
+export const fetchChatDetail = async (chatId?: string): Promise<IChat> => {
+  if (!chatId) throw new Error("Chat ID is required");
   const data = await fetchInterceptor(`/chats/${chatId}`);
   const fieldMappings = {
     chat_id: 'id',

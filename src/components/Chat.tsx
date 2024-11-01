@@ -1,6 +1,6 @@
 import { ChatProps } from '../models/chat.interface';
 import { useChatStore } from '../stores/chat.ts';
-import { isEmpty } from 'lodash-es';
+import { first, isNil } from 'lodash-es';
 
 export const Chat = ({ chat }: ChatProps) => {
   const selectedChat = useChatStore(state => state.selectedChat);
@@ -13,7 +13,7 @@ export const Chat = ({ chat }: ChatProps) => {
   return (
     <>
       {
-        !isEmpty(chat.dialogues) &&
+        !isNil(first(chat.dialogues)?.prompt) &&
         <div className={`flex flex-col gap-y-1 m-1 ${selectedChat?.id === chat.id ? 'bg-secondary' : 'bg-neutral'}`}
              onClick={onHandleClick}>
           <span className="self-start">{chat.dialogues?.[0]?.prompt ?? ''}</span>

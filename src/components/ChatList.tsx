@@ -4,34 +4,29 @@ import { useEffect } from 'react';
 import { addChat, fetchChatList } from '../services/api.ts';
 import { useActivatedChatStore } from '../stores/activatedChat.ts';
 import { last } from 'lodash-es';
+import { useQuery } from '@tanstack/react-query';
 
 export const ChatList = () => {
-  const chats = useChatStore(state => state.chats);
-  const { selectedChatModel, chatDetail, isChangedModel } = useActivatedChatStore(state => state);
-  const { setChats, setSelectedChat } = useChatStore(state => state.actions);
+  const selectedChat = useChatStore(state => state.selectedChat);
+  const { selectedChatModel, isChangedModel } = useActivatedChatStore(state => state);
+  const { setSelectedChat } = useChatStore(state => state.actions);
+
+  const {data: chatList, refetch} = useQuery({
+    queryKey: ['chatList'],
+    queryFn: fetchChatList
+  });
 
   useEffect(() => {
-    getChatList();
-  }, [chatDetail]);
+    refetch()
+  }, [selectedChat]);
 
   useEffect(() => {
     setSelectedChat(null);
   }, [isChangedModel]);
 
-  const getChatList = async () => {
-    try {
-      const response = await fetchChatList();
-      setChats(response);
-      return response;
-    } catch (e: unknown) {
-      console.error(e);
-    }
-  };
-
   const onHandleClickNewButton = async () => {
     await addChat(selectedChatModel!.id);
-    const list = await getChatList();
-    setSelectedChat(last(list));
+    refetch().then(({data}) => setSelectedChat(last(data) ?? null));
   };
 
   return (
@@ -40,7 +35,7 @@ export const ChatList = () => {
         <button className="h-1/10 w-1/4 m-2 self-end" onClick={onHandleClickNewButton}>New</button>
         <div className="h-full overflow-y-auto">
           {
-            chats.map((chat) => (
+            chatList?.map((chat) => (
               <Chat key={chat.id} chat={chat} />
             ))
           }

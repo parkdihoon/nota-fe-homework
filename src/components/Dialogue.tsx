@@ -73,7 +73,7 @@ export const Dialogue = () => {
         ))
       }
       <button
-        className={`sticky bottom-1 left-1/2 w-5 h-5 p-0 text-center leading-5 bg-secondary rounded-full animate-bounce ${isNotAtBottom ? 'inline-block' : 'hidden'}`}
+        className={`sticky bottom-1 left-1/2 w-5 h-5 p-0 text-center leading-5 bg-secondary rounded-full animate-bounce ${isNotAtBottom ? 'inline-block' : 'invisible'}`}
         onClick={onHandleClickLatest}>↓
       </button>
     </div>

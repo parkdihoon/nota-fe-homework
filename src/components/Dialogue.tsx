@@ -59,10 +59,10 @@ export const Dialogue = () => {
         !isNoneSelected() &&
         data?.dialogues?.map((dialogue) => (
           <div className="flex flex-col gap-y-1" key={dialogue.id}>
-            <span className="self-end bg-neutral p-2 rounded-lg whitespace-pre-wrap">{dialogue.prompt}</span>
+            <p className="self-end bg-neutral p-2 rounded-lg whitespace-pre-wrap">{dialogue.prompt}</p>
             {
               dialogue?.completion ?
-                <span className="self-start bg-neutral p-2 rounded-lg whitespace-pre-wrap">{dialogue?.completion}</span> :
+                <p className="self-start bg-neutral p-2 rounded-lg whitespace-pre-wrap">{dialogue?.completion}</p> :
                 <div className="flex items-center space-x-1">
                   <span className="h-2 w-2 rounded-full bg-gray-500 animate-bounceDot1"></span>
                   <span className="h-2 w-2 rounded-full bg-gray-500 animate-bounceDot2"></span>

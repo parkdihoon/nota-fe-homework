@@ -33,13 +33,13 @@ export const ChatList = () => {
     <>
       <div className="flex flex-col gap-y-1 w-1/3 border-2 rounded">
         <button className="h-1/10 w-1/4 m-2 self-end" onClick={onHandleClickNewButton}>New</button>
-        <div className="h-full overflow-y-auto">
+        <ul className="h-full overflow-y-auto">
           {
             chatList?.map((chat) => (
               <Chat key={chat.id} chat={chat} />
             ))
           }
-        </div>
+        </ul>
       </div>
     </>
   );

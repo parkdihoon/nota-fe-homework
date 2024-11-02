@@ -7,7 +7,7 @@ import { useFetchChatDetailQuery } from '../hooks/useFetchChatDetailQuery.ts';
 export const Dialogue = () => {
   const [isNotAtBottom, setIsNotAtBottom] = useState(false);
   const containerRef = useRef(null as HTMLDivElement | null);
-  const { isNoneSelected } = useChatStore(state => state.actions);
+  const selectedChat = useChatStore(state => state.selectedChat);
   const { setChatDetail } = useActivatedChatStore(state => state.actions);
   const { data, isSuccess, isLoading, isError, error } = useFetchChatDetailQuery();
 
@@ -56,7 +56,7 @@ export const Dialogue = () => {
   return (
     <div className="flex flex-col gap-y-1 flex-1 p-3 overflow-y-auto relative" ref={containerRef}>
       {
-        !isNoneSelected() &&
+        selectedChat !== null &&
         data?.dialogues?.map((dialogue) => (
           <div className="flex flex-col gap-y-1" key={dialogue.id}>
             <p className="self-end bg-neutral p-2 rounded-lg whitespace-pre-wrap">{dialogue.prompt}</p>

@@ -10,7 +10,7 @@ export const PromptInput = () => {
   const queryClient = useQueryClient();
 
   const [prompt, setPrompt] = useState<string>('');
-  const { isNoneSelected } = useChatStore(state => state.actions);
+  const selectedChat = useChatStore(state => state.selectedChat);
   const { chatDetail } = useActivatedChatStore(state => state);
 
   const mutation = useMutation({
@@ -73,9 +73,9 @@ export const PromptInput = () => {
   return (
     <>
       <form className="flex flex-row gap-x-1 p-3" onSubmit={onHandleSubmit}>
-            <textarea className="w-full resize-none" rows={3} disabled={isNoneSelected()} value={prompt}
+            <textarea className="w-full resize-none" rows={3} disabled={selectedChat === null} value={prompt}
                       onChange={onHandlePromptChange} />
-        <button disabled={isNoneSelected() || isEmpty(prompt)} type="submit">Submit</button>
+        <button disabled={selectedChat === null || isEmpty(prompt)} type="submit">Submit</button>
       </form>
     </>
   );

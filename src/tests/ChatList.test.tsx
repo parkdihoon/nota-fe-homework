@@ -58,9 +58,11 @@ describe('[채팅 목록] 테스트', () => {
     expect(items).toHaveLength(4);
 
     const targetChat = screen.getByText('Nota_Model_01', { selector: 'span' }).closest('li');
-    act(() => {
-      userEvent.click(targetChat);
-    });
+    if (targetChat) {
+      act(() => {
+        userEvent.click(targetChat);
+      });
+    }
 
     const targetChatItem = items[1];
     await waitFor(() => {

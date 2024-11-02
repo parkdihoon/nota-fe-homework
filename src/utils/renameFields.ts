@@ -9,7 +9,7 @@ export function renameFields<T>(obj: any, mappings: { [key: string]: string }): 
       const value = obj[key];
 
       // 재귀적으로 내부 객체나 배열 처리
-      acc[newKey] = renameFields(value, mappings);
+      (acc as any)[newKey] = renameFields(value, mappings);
       return acc;
     }, {} as T);
   }

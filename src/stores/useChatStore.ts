@@ -18,7 +18,7 @@ const store = (set: (state: Partial<State & Action>) => void) => ({
 });
 
 const useChatStore = create<State & Action>()(
-  process.env.NODE_ENV !== 'production' ? devtools<State & Action>(store) : store,
+  process.env.NODE_ENV !== 'production' ? store: devtools<State & Action>(store),
 );
 
 export default useChatStore;

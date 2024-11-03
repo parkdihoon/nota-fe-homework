@@ -1,14 +1,19 @@
 import { ChangeEvent, useEffect } from 'react';
 import { fetchChatModels } from '../services/api.ts';
-import { useChatStore } from '../stores/chat.ts';
-import { useActivatedChatStore } from '../stores/activatedChat.ts';
+import useChatStore from '../stores/useChatStore.ts';
+import useActivatedChatStore from '../stores/useActivatedChatStore.ts';
 import { first, isEmpty } from 'lodash-es';
 import { useQuery } from '@tanstack/react-query';
 
 export const ModelSelect = () => {
-  const selectedChat = useChatStore(state => state.selectedChat);
-  const { selectedChatModel, chatDetail, isChangedModel } = useActivatedChatStore(state => state);
-  const { setSelectedChatModel, setIsChangedModel } = useActivatedChatStore(state => state.actions);
+  const { selectedChat } = useChatStore(state => state);
+  const {
+    selectedChatModel,
+    chatDetail,
+    isChangedModel,
+    setSelectedChatModel,
+    setIsChangedModel,
+  } = useActivatedChatStore(state => state);
   const { data, isSuccess, isLoading, isError, error } = useQuery({
     queryKey: ['chatModels'],
     queryFn: () => fetchChatModels(),

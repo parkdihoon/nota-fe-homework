@@ -1,5 +1,5 @@
-import { useActivatedChatStore } from '../stores/activatedChat.ts';
-import { useChatStore } from '../stores/chat.ts';
+import useActivatedChatStore from '../stores/useActivatedChatStore.ts';
+import useChatStore from '../stores/useChatStore.ts';
 import { useEffect, useRef, useState } from 'react';
 import { isNil } from 'lodash-es';
 import { useFetchChatDetailQuery } from '../hooks/useFetchChatDetailQuery.ts';
@@ -7,8 +7,8 @@ import { useFetchChatDetailQuery } from '../hooks/useFetchChatDetailQuery.ts';
 export const Dialogue = () => {
   const [isNotAtBottom, setIsNotAtBottom] = useState(false);
   const containerRef = useRef(null as HTMLDivElement | null);
-  const selectedChat = useChatStore(state => state.selectedChat);
-  const { setChatDetail } = useActivatedChatStore(state => state.actions);
+  const { selectedChat } = useChatStore(state => state);
+  const { setChatDetail } = useActivatedChatStore(state => state);
   const { data, isSuccess, isLoading, isError, error } = useFetchChatDetailQuery();
 
   useEffect(() => {

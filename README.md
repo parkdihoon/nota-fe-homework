@@ -71,8 +71,8 @@ npm run test
 ├── services
 │   └── api.ts
 ├── stores
-│   ├── activatedChat.ts
-│   └── chat.ts
+│   ├── useActivatedChatStore.ts
+│   └── useChatStore.ts
 ├── tests
 │   ├── ActivatedChat.test.tsx
 │   ├── ChatList.test.tsx

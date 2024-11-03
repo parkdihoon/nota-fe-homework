@@ -1,5 +1,5 @@
-import { useChatStore } from '../stores/chat.ts';
-import { useActivatedChatStore } from '../stores/activatedChat.ts';
+import useChatStore from '../stores/useChatStore.ts';
+import useActivatedChatStore from '../stores/useActivatedChatStore.ts';
 import { ChangeEvent, FormEvent, useState } from 'react';
 import { addDialogueInChat } from '../services/api.ts';
 import { isEmpty, isNil, last } from 'lodash-es';
@@ -10,7 +10,7 @@ export const PromptInput = () => {
   const queryClient = useQueryClient();
 
   const [prompt, setPrompt] = useState<string>('');
-  const selectedChat = useChatStore(state => state.selectedChat);
+  const { selectedChat } = useChatStore(state => state);
   const { chatDetail } = useActivatedChatStore(state => state);
 
   const mutation = useMutation({
@@ -33,7 +33,11 @@ export const PromptInput = () => {
         const updatedChatList = [...oldChatList];
         const lastChat = last(updatedChatList);
         if (lastChat) {
-          lastChat.dialogues = [...lastChat.dialogues, { id: Date.now().toString(), prompt: newData.prompt, completion: '' }];
+          lastChat.dialogues = [...lastChat.dialogues, {
+            id: Date.now().toString(),
+            prompt: newData.prompt,
+            completion: '',
+          }];
         }
         return updatedChatList;
       });

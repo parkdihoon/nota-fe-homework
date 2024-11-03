@@ -14,7 +14,7 @@ function App() {
         <ChatList />
         <ActivatedChat />
       </div>
-      <ReactQueryDevtools initialIsOpen={false} />
+      <ReactQueryDevtools initialIsOpen={import.meta.env.MODE === 'development'} />
     </QueryClientProvider>
   );
 }
